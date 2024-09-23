@@ -1,7 +1,9 @@
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.BufferedInputStream;
 import java.io.FileOutputStream;
+import java.io.BufferedOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -90,9 +92,9 @@ public class Git{
 
 
         //should make into bufferedInputStream and BufferedOutputStream later
-        FileInputStream in = new FileInputStream(input);
+        BufferedInputStream in = new BufferedInputStream(new FileInputStream(input));
 
-        FileOutputStream out = new FileOutputStream(copy);
+        BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(copy));
 
         //copies the contents of the file
         int n;
@@ -105,8 +107,8 @@ public class Git{
 
 
         //inserts an entry into index file
-        FileWriter fw = new FileWriter("git/index");
-        fw.write(fileName + " " + input.getName());
-        fw.close();
+        BufferedWriter bw = new BufferedWriter(new FileWriter("git/index"));
+        bw.write(fileName + " " + input.getName());
+        bw.close();
     }
 }
