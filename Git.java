@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.io.FileNotFoundException;
 
 public class Git{
     public static void main(String[] args) throws IOException {
@@ -83,6 +84,23 @@ public class Git{
 
     //
     public void makeBlob(File input) throws IOException{
+        //check that file exists
+        if (!input.exists()){
+            throw new FileNotFoundException();
+        }
+
+        //check that git repo exists
+        File gitDir = new File("git");
+
+        File objectsDir = new File("git/objects");
+
+        File indexFile = new File("git/index");
+
+        if (!gitDir.exists() || !objectsDir.exists() || !indexFile.exists()){
+            throw new IOException("git directory doesnt exist");
+        }
+        
+
         String fileName = generateFileName(input);
 
         //creates empty file in objects directory
@@ -103,7 +121,6 @@ public class Git{
         }
         in.close();
         out.close();
-
 
 
         //inserts an entry into index file
