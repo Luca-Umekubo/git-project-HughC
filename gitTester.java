@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.IOException;
+import java.io.FileNotFoundException;
 
 public class gitTester {
     public static void main(String[] args) throws IOException {
@@ -21,21 +22,38 @@ public class gitTester {
             System.out.println("Git repository exists");
         }
         else{
-            if (!gitDir.exists()){
-                System.out.println("git directory doesnt exist");  
-            }
             if (!objectsDir.exists()){
                 System.out.println("objects directory doesnt exist");  
             }
+            else{
+                recursiveDelete(objectsDir);
+                System.out.println("successfully deleted objects directory");  
+            }
+
             if (!indexFile.exists()){
                 System.out.println("index doesnt exist"); 
             }
+            else{
+                recursiveDelete(indexFile);
+                System.out.println("successfully deleted index");  
+            }
+
+            if (!gitDir.exists()){
+                System.out.println("git directory doesnt exist");  
+            }
+            else{
+                recursiveDelete(gitDir);
+                System.out.println("successfully deleted git directory");  
+            }
         }
-
-        System.out.println("now deleting:");  
-
-        objectsDir.delete();
-        indexFile.delete();
-        gitDir.delete();
+    }
+    
+    public static void recursiveDelete(File file) throws FileNotFoundException{
+        if (file.isDirectory()){
+            for (File c : file.listFiles())
+            recursiveDelete(c);
+        }
+        if (!file.delete())
+        throw new FileNotFoundException("Failed to delete file: " + file);
     }
 }
