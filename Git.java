@@ -50,7 +50,7 @@ public class Git{
     }
     
     //generates the hash string name according to SHA1
-    private String generateFileName(File input) throws IOException{
+    public String generateFileName(File input) throws IOException{
                 try {
             
             // getInstance() method is called with algorithm SHA-1
@@ -99,7 +99,7 @@ public class Git{
         if (!gitDir.exists() || !objectsDir.exists() || !indexFile.exists()){
             throw new IOException("git directory doesnt exist");
         }
-        
+
 
         String fileName = generateFileName(input);
 
