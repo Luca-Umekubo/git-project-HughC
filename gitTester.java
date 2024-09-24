@@ -20,30 +20,19 @@ public class gitTester {
 
         if (gitDir.exists() && objectsDir.exists() && indexFile.exists()){
             System.out.println("Git repository exists");
+            
+            recursiveDelete(gitDir);
+            System.out.println("successfully deleted git directory and all contents");
         }
         else{
             if (!objectsDir.exists()){
                 System.out.println("objects directory doesnt exist");  
             }
-            else{
-                recursiveDelete(objectsDir);
-                System.out.println("successfully deleted objects directory");  
-            }
-
             if (!indexFile.exists()){
                 System.out.println("index doesnt exist"); 
             }
-            else{
-                recursiveDelete(indexFile);
-                System.out.println("successfully deleted index");  
-            }
-
             if (!gitDir.exists()){
                 System.out.println("git directory doesnt exist");  
-            }
-            else{
-                recursiveDelete(gitDir);
-                System.out.println("successfully deleted git directory");  
             }
         }
     }
