@@ -13,6 +13,8 @@ public class gitTester {
         //makes new git repo
         Git repo = new Git();
 
+        repo.setCompression(true);
+
         //tests file using a file in the git project folder
         File testFile = new File("testfile.txt");
         repo.makeBlob(testFile);

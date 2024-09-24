@@ -12,8 +12,11 @@ import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.io.FileNotFoundException;
+import java.util.zip.ZipOutputStream;
+import java.util.zip.ZipEntry;
 
 public class Git{
+    boolean compressionOn = false;
     public static void main(String[] args) throws IOException {
 
     }
@@ -100,17 +103,27 @@ public class Git{
             throw new IOException("git directory doesnt exist");
         }
 
-
-        String fileName = generateFileName(input);
+        //generates new hashed filename dependent on compression toggle
+        String fileName;
+        if (!compressionOn){
+            fileName = generateFileName(input);
+        }
+        else{
+            fileName = generateFileName(compressFile(input));
+        }
+        
 
         //creates empty file in objects directory
         File copy = new File("git/objects/" + fileName);
         copy.createNewFile();
 
-
-
-        //should make into bufferedInputStream and BufferedOutputStream later
-        BufferedInputStream in = new BufferedInputStream(new FileInputStream(input));
+        BufferedInputStream in;
+        if (!compressionOn){
+            in = new BufferedInputStream(new FileInputStream(input));
+        }
+        else{
+            in = new BufferedInputStream(new FileInputStream(compressFile(input)));
+        }
 
         BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(copy));
 
@@ -127,5 +140,39 @@ public class Git{
         BufferedWriter bw = new BufferedWriter(new FileWriter("git/index"));
         bw.write(fileName + " " + input.getName());
         bw.close();
+    }
+
+    //getter and setter for compression toggle
+    public boolean isCompressionOn(){
+        return compressionOn;
+    }
+
+    public void setCompression(boolean in){
+        compressionOn = in;
+    }
+
+    //compression method
+    private File compressFile(File file) throws FileNotFoundException{
+
+        try {
+            File out = new File("temp");
+ 
+            FileOutputStream fos = new FileOutputStream(out);
+            ZipOutputStream zos = new ZipOutputStream(fos);
+ 
+            zos.putNextEntry(new ZipEntry(file.getName()));
+ 
+            byte[] bytes = Files.readAllBytes(Paths.get(file.getPath()));
+            zos.write(bytes, 0, bytes.length);
+            zos.closeEntry();
+            zos.close();
+            return out;
+ 
+        } catch (FileNotFoundException ex) {
+            System.err.format("The file %s does not exist", file.getPath());
+        } catch (IOException ex) {
+            System.err.println("I/O error: " + ex);
+        }
+        return null;
     }
 }
